@@ -17,6 +17,23 @@ class Game {
   }
 
   registerEvents() {
+    let element = null;
+    let keyboardSymbol = '';
+
+    addEventListener('keyup', (event) => {
+      element = this.currentSymbol; // получает DOM-элемент текущего символа
+      keyboardSymbol = event.key.toLowerCase(); // получает символ введенный с клавиатуры и приводит его к верхнему регистру
+      if(keyboardSymbol == element.textContent.toLowerCase()) { // проверяет совпадение
+        console.log('Символы совпадают');
+        this.success();
+
+      } else {
+        console.log('Символы не совпадают');
+        this.fail();
+
+      };
+
+    });
     /*
       TODO:
       Написать обработчик события, который откликается

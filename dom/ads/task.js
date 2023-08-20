@@ -17,6 +17,12 @@ function changeCase() { // меняет текст
   };
 
   newCase.classList.remove('rotator__case_active'); // удаляет класс
+
+  // if(rotatorCases[cunrrentCaseIndex].textContent.indexOf('Бог JS')) {
+  //   rotatorCases[cunrrentCaseIndex].setAttribute('data-speed', 1000);
+  //   rotatorCases[cunrrentCaseIndex].setAttribute('data-color', 'red');
+  // }
+
   rotatorCases[cunrrentCaseIndex].classList.add('rotator__case_active'); // добавляет класс
 
 };

@@ -1,7 +1,4 @@
-console.log('Высота окна', window.innerHeight, 'Ширина окна', window.innerWidth);
-
 const reveal = document.querySelector('.reveal');
-console.log(reveal.getBoundingClientRect());
 
 addEventListener('scroll', (event) => { // отслеживает изменение прокрутки окна
   const innerHeight = window.innerHeight; // получает высоту viewport

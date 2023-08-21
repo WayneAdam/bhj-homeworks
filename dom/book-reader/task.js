@@ -2,10 +2,6 @@
 const bookControlFontSize = document.querySelectorAll('.font-size'); // получает доступ к всем элементам управления размером текста
 const bookControlPanel = document.querySelector('.book__control'); // получает доступ к обертке элементов управления
 const book = document.querySelector('.book'); // получает доступ к общей обертке читалки
-// let indexItem = 0;
-
-// const p = document.querySelectorAll('p'); // получает доступ ко всем параграфам
-// console.log(bookControlFontSize);
 
 bookControlPanel.addEventListener('click', (event) => { // добавляет обработчик событий
   event.preventDefault(); // сбрасывает поведение браузера по умолчанию
@@ -20,7 +16,6 @@ bookControlPanel.addEventListener('click', (event) => { // добавляет о
   });
 
   if(!targetItem.classList.contains('font-size_active')) {
-    // console.log('Условие работает');
     targetItem.classList.add('font-size_active'); // добавляет класс
 
   };

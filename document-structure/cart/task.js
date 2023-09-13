@@ -27,22 +27,49 @@ function changeQuantityValue(e) { // изменяет количество то�
 };
 
 function addToCart(e) { // добавляет товар в корзину
+  const productItem = cartProductAll[0].cloneNode(true); // клонирует шаблон товара для добавляения в корзину
+
   let mainCardProdactItem = e.target.closest('.product'); // находит родителя кликнутого элемента с классом "product"
   let srcCardImg = mainCardProdactItem.children[1].currentSrc; // находит ссылку на изображение элемента
   let idCard = mainCardProdactItem.dataset.id; // находит ID товара
   const quantityValue = mainCardProdactItem.querySelector('.product__quantity-value').innerText; // находит количество товаров для добавления в корзину
 
-  const productItem = cartProductAll[0].cloneNode(true); // клонирует шаблон товара для добавляения в корзину
-
   productItem.dataset.id = idCard; // присваевает ID товара добавляемому элементу в корзине
   productItem.children[0].src = srcCardImg; // вставляет изображение товара добавляемому элементу в корзине
   productItem.children[1].innerText = quantityValue; // присваивает количество товара добавляемому элементу в корзине
 
-  /**...остановился на проверке, есть ли уже добавленные в корзине элементы */
-  
-  cartProducts.appendChild(productItem); // добавляет товар в корзину
+  if(cartProducts.children.length >= 1) { // 1 условие
+    let allInCart = cartProducts.querySelectorAll('.cart__product'); // собирает все товары в корзине
 
-  console.log(cartProducts);
+
+    for(const product of allInCart) { // бежит по всем товарам в корзине
+      let productId = Number(product.dataset.id); // получает ID продукта
+      let addedProductId = Number(productItem.dataset.id); // получает ID добавляемого товара
+
+      if(productId === addedProductId) { // 2 условие
+        let countValue = Number(productItem.children[1].innerHTML); // получает количество штук добавляемого товара
+        let getProductCountValue = Number(product.children[1].innerHTML); // получает количество штук товара в корзине
+
+        product.children[1].innerHTML = countValue + getProductCountValue;
+
+        // console.log('Условие 2');
+
+      }
+
+      if(productId !== addedProductId) { // 3 условие
+        cartProducts.appendChild(productItem);
+        // console.log('Условие 3', productItem);
+
+      }
+
+    }
+
+  }
+
+  if(cartProducts.children.length === 0) { // 4 проверяет наличие товаров в корзине
+    cartProducts.appendChild(productItem); // добавляет товар в корзину
+  }
+  
 };
 
 for(const item of productQuantityControls) { // бежит по всем кнопкам "-" и "+"
@@ -52,5 +79,3 @@ for(const item of productQuantityControls) { // бежит по всем кно�
 for(const item of productAddBtns) {  // бежит по всем кнопкам "добавить в корзину"
   item.addEventListener('click', addToCart); // добавляет обработчик событий
 };
-
-// console.log(cartProductsBtns);

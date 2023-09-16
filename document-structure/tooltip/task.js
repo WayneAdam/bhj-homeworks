@@ -1,28 +1,38 @@
-const hasTooltip = document.querySelectorAll('.has-tooltip'); // находит все элементы для подсказок
-const tooltip = document.querySelector('.tooltip'); // получает элемент подсказки
 
-function showTooltip(event) { //  показывает подсказку
-  event.preventDefault(); // сбрасывает настр. браузера
+/** создание элемента подсказки */
+const tooltip = document.createElement('div');
+tooltip.className = 'tooltip';
+document.body.appendChild(tooltip);
 
-  const targetElement = event.target; // получает кликнутый элемент
-  const targetElementHeight = targetElement.offsetHeight; // полчает высоту кликнутого элемента
-  const targetElementY = targetElement.getBoundingClientRect().y; // получает координату "y"
-  const targetElementX = targetElement.getBoundingClientRect().x; // получает координату "x"
+/** поиск всех элементов для отображения подсказки */
+const linksTooltip = Array.from(document.querySelectorAll('.has-tooltip'));
 
-  tooltip.style.top = (targetElementY + targetElementHeight) + 'px'; // устанавливает расположение подсказки по координате "y"
-  tooltip.style.left = targetElementX + 'px'; // устанавливает по расположение подсказки по координате "x"
+/** добавление обработчика событий */
+linksTooltip.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
 
-  tooltip.innerHTML = targetElement.title; // вставляет текст подсказки
+    /** текст подсказки */
+    const tooltipText = link.getAttribute('title');
 
-  if(!tooltip.classList.contains('tooltip_active')) { // проверяет активна ли подсказка
-    tooltip.classList.add('tooltip_active'); // добавляет класс
-  } else {
-    tooltip.classList.remove('tooltip_active'); // удаляет класс
-  };
+    tooltip.textContent = tooltipText;
 
-};
+    /** позиционирование подсказки */
+    const linkPosition = link.getBoundingClientRect();
+    tooltip.style.left = linkPosition.left + 'px';
+    tooltip.style.top = linkPosition.bottom + 'px';
 
-for(const item of hasTooltip) { // бежит по всем элементам
-  item.addEventListener('click', showTooltip); // добавляет обработчик событий
+    /** отображение подсказки */
+    tooltip.classList.toggle('tooltip_active');
+
+    /** удалить подсказку */
+    const removeTooltip = (e) => {
+		if (!tooltip.contains(e.target) && !link.contains(e.target)) {
+		  tooltip.classList.remove('tooltip_active');
+		  document.removeEventListener('click', removeTooltip);
+		}
+	  };
   
-};
+	  document.addEventListener('click', removeTooltip);
+  });
+});

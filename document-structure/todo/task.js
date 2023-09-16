@@ -1,39 +1,59 @@
-const tasksInput = document.querySelector('.tasks__input'); // находит поле ввода текста задачи
-const tasksList = document.querySelector('.tasks__list'); // находит список задач
-const tasksAddBtn = document.querySelector('.tasks__add'); // нахдодит кнопку "добавить"
-const tasks = document.querySelectorAll('.task'); // находит все задачи
-const task = document.querySelector('.task'); // находит одну задачу для клонирования
+/** контейнер для отображения задач */
+const taskList = document.querySelector('.tasks__list');
+/** получает кнопку "добавить" */
+const addButton = document.querySelector('#tasks__add');
 
-for(const item of tasks) { // удаляет все задачи
-  item.remove();
+/** удаляет задачу */
+function removeTask(event) {
+  /** нахдодит ближайшего родителя */
+  const newTask = event.target.closest('.task');
 
-};
+  if (newTask) {
+    newTask.remove();
+  }
+}
 
-function removeTask(e) {
-  const deletedTask = e.target.parentElement; // находит удаляемую задачу
-  deletedTask.remove();
+/** добавление задачи */
+function addTask(event) {
+  event.preventDefault(); 
 
-};
+  /** находит поле ввода */
+  const taskInput = document.querySelector('#task__input');
+  /** удаляет лишние пробелы */
+  const taskInputText = taskInput.value.trim();
 
-function addTasks(e) { // добавляет задачу в лист задач
-  e.preventDefault(); // сбрасывает настройки браузера 
-
-  if(e.key === 'Enter' && tasksInput.value ||
-  e.type === 'click' && tasksInput.value) { // проверяет нажатие Enter и наличие текста в поле ввода
-    const taskClone = task.cloneNode(true); // клонирует задачу
-    taskClone.children[0].innerHTML = tasksInput.value; // добавляет текст задачи в элемент из поля ввода
-    tasksList.appendChild(taskClone); // добавляет задачу в список задач
-    tasksInput.value = '';  // очищает поле ввода
-  };
+  /** проверка поля на пустоту */
+  if (taskInputText !== '') {
+    /** создание нового элемента задачи */
+    const newTask = document.createElement('div');
+    newTask.classList.add('task');
+    /** создание заголовка новой задачи */
+    const newTaskTitle = document.createElement('div');
   
-  let taskRemove = document.querySelectorAll('.task__remove'); // находит все кнопки для удаления
+    newTaskTitle.classList.add('task__title');
+    newTaskTitle.textContent = taskInputText;
 
-  for(const item of taskRemove) { // бежит по всем задачам из списка
-    item.addEventListener('click', removeTask); // добавляет обработчик событий
-  };
+    /** создание кнопки удаления задачи */
+    const taskDeletBtn = document.createElement('a');
+
+    taskDeletBtn.classList.add('task__remove');
+    taskDeletBtn.innerHTML = '&times;'; // значек "x"
+
+    /** обавляет обработчик событий для удаления задачи */
+    taskDeletBtn.addEventListener('click', removeTask);
+
+    /** заполнение элемента задачи */
+    newTask.appendChild(newTaskTitle);
+    newTask.appendChild(taskDeletBtn);
+    
+    /** добавляет задачу в список */
+    taskList.appendChild(newTask);
+
+    /** очищает поле ввода */
+    taskInput.value = '';
+  }
 
 };
 
-addEventListener('keyup', addTasks); // добавляет обработчик событий на Enter
-
-tasksAddBtn.addEventListener('click', addTasks); // добавляет обработчик событий на кнопку "Добавить"
+/** добавляет обработчик событий */
+addButton.addEventListener('click', addTask);

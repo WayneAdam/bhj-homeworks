@@ -1,71 +1,49 @@
-// Получаем ссылку на элемент загрузки и контейнер для данных
-const loader = document.getElementById('loader');
-const itemsContainer = document.getElementById('items');
+/** Получение доступа к нужным элементам */
+const itemsWrapper = document.querySelector('#items');
+const url = 'https://students.netoservices.ru/nestjs-backend/slow-get-courses';
 
-// Функция для выполнения XMLHttpRequest и получения данных о курсах валют
-function fetchCurrencyData() {
-  // Показываем загрузчик
-  loader.classList.add('loader_active');
+/** Создание и отправка и обработка запроса */
+let xhr = new XMLHttpRequest();
 
-  // Создаем новый объект XMLHttpRequest
-  const xhr = new XMLHttpRequest();
-  
-  // Настраиваем GET-запрос к API
-  xhr.open('GET', 'https://students.netoservices.ru/nestjs-backend/slow-get-courses', true);
+xhr.open('GET', url);
 
-  // Устанавливаем обработчик события onload, который сработает при успешном завершении запроса
-  xhr.onload = function() {
-    // Проверяем статус ответа
-    if (xhr.status === 200) {
-      // Скрываем загрузчик
-      loader.classList.remove('loader_active');
+xhr.onreadystatechange = function(event) {
+  if(this.readyState === 4 && this.status === 200) {
+    let responseText = this.responseText;
+    let parsedResponse = JSON.parse(responseText);
+    let valuteObj = parsedResponse.response.Valute;
 
-      // Извлекаем данные о курсах валют из ответа
-      const data = JSON.parse(xhr.responseText);
-      const valute = data.response.Valute;
+    for(const currencyCode in valuteObj) {
+      if(valuteObj.hasOwnProperty(currencyCode)) {
+        /** Получает объект с данными по валюте */
+        const currencyItem = valuteObj[currencyCode];
 
-      // Перебираем валюты и создаем HTML-элементы
-      for (const currencyCode in valute) {
-        if (valute.hasOwnProperty(currencyCode)) {
-          const currencyInfo = valute[currencyCode];
-          const item = document.createElement('div');
-          item.className = 'item';
+        /** Создание шаблона и его заполнение */
+        let divItemCode = document.createElement('div');
+        divItemCode.className = 'item__code';
+        divItemCode.innerHTML = currencyItem.CharCode;
 
-          const codeElement = document.createElement('div');
-          codeElement.className = 'item__code';
-          codeElement.textContent = currencyInfo.CharCode;
+        let divItemValue = document.createElement('div');
+        divItemValue.className = 'item__value';
+        divItemValue.innerHTML = currencyItem.Value;
 
-          const valueElement = document.createElement('div');
-          valueElement.className = 'item__value';
-          valueElement.textContent = currencyInfo.Value.toFixed(4);
+        let divItemCurrency = document.createElement('div');
+        divItemCurrency.className = 'item__currency';
+        divItemCurrency.innerHTML = 'руб.';
 
-          const currencyElement = document.createElement('div');
-          currencyElement.className = 'item__currency';
-          currencyElement.textContent = 'руб.';
+        let itemsContainer = document.createElement('div');
+        itemsContainer.className = 'item';
 
-          item.appendChild(codeElement);
-          item.appendChild(valueElement);
-          item.appendChild(currencyElement);
+        itemsContainer.appendChild(divItemCode);
+        itemsContainer.appendChild(divItemValue);
+        itemsContainer.appendChild(divItemCurrency);
 
-          itemsContainer.appendChild(item);
-        }
-      }
+        itemsWrapper.appendChild(itemsContainer);
+      };
+    };
 
-    } else {
-      console.error('Ошибка при загрузке данных. Статус:', xhr.status);
-      // Обрабатываем ошибку, например, отображаем сообщение об ошибке
-    }
-    
+    loader.classList.toggle('loader_active');
   };
+};
 
-  // Устанавливаем обработчик события onerror, который сработает при ошибке запроса
-  xhr.onerror = function() {
-    console.error('Ошибка при выполнении запроса.');
-  };
-
-  // Отправляем запрос
-  xhr.send();
-}
-
-// Вызываем функцию fetchCurrencyData
-fetchCurrencyData();
+xhr.send();

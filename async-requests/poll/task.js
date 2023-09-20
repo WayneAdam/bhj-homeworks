@@ -1,49 +1,45 @@
-// Функция для выполнения GET-запросов с использованием XMLHttpRequest
-function fetchData(url, callback) {
-	const xhr = new XMLHttpRequest();
-	xhr.open('GET', url, true);
-  
-	xhr.onreadystatechange = function () {
-	  if (xhr.readyState === 4) {
-			if (xhr.status === 200) {
-				const data = JSON.parse(xhr.responseText);
-				callback(data);
-			} else {
-				console.error('Error', xhr.status);
-			}
+/** Получение доступа к нужным элементам */
+const pollAnswers = document.querySelector('#poll__answers');
 
-	  }
+function getCheckinAnswer() {
+	alert('Спасибо, ваш голос засчитан!');
+	window.location.reload();
+}
+
+/** Создание, обработка запроса и его отправка */
+let url = 'https://students.netoservices.ru/nestjs-backend/poll';
+const xhr = new XMLHttpRequest();
+
+xhr.open('GET', url);
+
+xhr.onreadystatechange = function() {
+	if(xhr.readyState === xhr.DONE && xhr.status === 200) {
+		let xhrResponseObj = JSON.parse(xhr.response);
+		let answersArray = xhrResponseObj.data.answers;
+		let title = xhrResponseObj.data.title;
+
+		const pollTitle = document.querySelector('#poll__title');
+
+		pollTitle.innerHTML = title;
+
+		let allAnswersBtn = [];
+
+		for(const answer of answersArray) {
+			let pollAnswerBtn = document.createElement('button');
+			pollAnswerBtn.className = 'poll__answer';
+			pollAnswerBtn.innerHTML = answer;
+
+			allAnswersBtn.push(pollAnswerBtn);
+
+			pollAnswers.appendChild(pollAnswerBtn);
+		};
+
+		for(let btn of allAnswersBtn) {
+			btn.addEventListener('click', getCheckinAnswer);
+		};
 
 	};
-  
-	xhr.send();
-}
-  
-// Функция для отображения опроса
-function displayPoll() {
-	const pollTitleElement = document.getElementById('poll__title');
-	const pollAnswersElement = document.getElementById('poll__answers');
-  
-	fetchData('https://students.netoservices.ru/nestjs-backend/poll', function (pollData) {
-	  // Отображаем вопрос
-	  pollTitleElement.textContent = pollData.data.title;
-  
-	  // Ответы в виде кнопок
-	  pollData.data.answers.forEach(answer => {
-			const answerButton = document.createElement('button');
-			answerButton.className = 'poll__answer';
-			answerButton.textContent = answer;
-			answerButton.addEventListener('click', () => {
-				alert('Спасибо, ваш голос засчитан!');
 
-			});
+};
 
-			pollAnswersElement.appendChild(answerButton);
-
-	  });
-
-	});
-
-}
-//Для отображения опроса при загрузке страницы
-displayPoll();
+xhr.send();

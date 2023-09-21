@@ -1,32 +1,35 @@
-const form = document.getElementById('form');
-const progress = document.getElementById('progress');
+/** Получение доступа к необходимым элементам */
+const progress = document.querySelector('#progress');
+const form = document.forms.form;
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Предотвращаем стандартное поведение отправки формы
+/** Отслеживание события отправки формы */
+form.addEventListener('submit', e => {
+    e.preventDefault();
 
     const formData = new FormData(form);
+    formData.append('filename', file);
 
+    /** Создание, обработка и отправка запроса */
     const xhr = new XMLHttpRequest();
+
     xhr.open('POST', form.action);
 
-    xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-            const percentComplete = (event.loaded / event.total) * 100;
-            progress.value = percentComplete; // Обновляем значение прогресса
-        }
+    xhr.upload.addEventListener('progress', event => {
+        if(event.lengthComputable) {
+            let progressLoad = event.loaded / event.total;
+
+            progress.value = progressLoad;
+        };
     });
 
     xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // Файл успешно загружен
-                console.log('Файл успешно загружен');
-            } else {
-                // Возникла ошибка при загрузке файла
-                console.error('Ошибка загрузки файла');
-            }
-        }
+        if(xhr.readyState !== xhr.DONE && xhr.status !== 200) {
+            console.log('Ошибка загрузки файла!');
+        } else {
+            console.log('Загрузка успешно завершена!');
+        };
     };
 
-    xhr.send(formData); // Отправляем форму через AJAX
+    xhr.send(formData);
+    
 });

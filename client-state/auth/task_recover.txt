@@ -1,20 +1,22 @@
 /** Получение доступа к нужным элементам */
 const signin = document.querySelector('#signin');
 const form = document.querySelector('#signin__form');
-// localStorage.clear();
 
 let url = 'https://students.netoservices.ru/nestjs-backend/auth';
 
-if(localStorage.hasOwnProperty('userid')) {
-  let userId = localStorage.userid;
+function checkUserId() {
+  if(localStorage.hasOwnProperty('userid')) {
+    let userId = localStorage.userid;
 
-  const welcomeDiv = document.querySelector('#welcome');
+    const welcomeDiv = document.querySelector('#welcome');
 
-  welcomeDiv.innerHTML = `Добро пожаловать, пользователь #${userId}`;
-  welcomeDiv.classList.add('welcome_active');
+    welcomeDiv.innerHTML = `Добро пожаловать, пользователь #${userId}`;
+    welcomeDiv.classList.add('welcome_active');
 
-  signin.classList.remove('signin_active');
+    signin.classList.remove('signin_active');
+  };
 };
+// checkUserId();
 
 /** Добавление обработчика событий */
 form.addEventListener('submit', function(e) {

@@ -1,16 +1,16 @@
+/** Получение доступа к элементу */
+const text = document.querySelector('#editor');
+
 /** Сохранение текста из поля */
 function saveTextFromLocalStorage() {
-  const text = document.querySelector('#editor').value;
-  localStorage.setItem('text', text);
+  localStorage.setItem('text', text.value);
 };
 
 /** Восстановление текста из поля */
 function restoreFromLocalStorage() {
   const storedText = localStorage.getItem('text');
 
-  if(storedText) {
-    document.querySelector('#editor').value = storedText;
-  } 
+  document.querySelector('#editor').value = storedText;
 };
 
 document.addEventListener('keyup', saveTextFromLocalStorage);

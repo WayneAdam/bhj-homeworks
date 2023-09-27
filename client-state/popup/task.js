@@ -6,12 +6,13 @@ let cookie = document.cookie;
 function checkCookie() {
   let cookieArray = cookie.split('; ');
 
-  for(let item of cookieArray) {
+  cookieArray.find(item => {
     if(item !== 'modalclosed=true') {
       modal.classList.add('modal_active');
-    };
-  };
+    }
+  });
 };
+
 checkCookie();
 
 function closeModal(event) {

@@ -25,9 +25,11 @@ form.addEventListener('submit', function(e) {
   /** Создание, обработка и отпаравка запроса и ответа от сервера */
   const xhr = new XMLHttpRequest();
   xhr.open('POST', url);
+  xhr.responseType = 'json';
 
   xhr.onload = function(e) {
-    let response = JSON.parse(xhr.response);
+    let response = xhr.response;
+    // let response = JSON.parse(xhr.response);
 
     if(response.success) {
       const userId = response.user_id;
